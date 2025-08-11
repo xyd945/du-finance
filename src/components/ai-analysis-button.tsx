@@ -3,22 +3,23 @@
 import { useState } from 'react';
 import { SparklesIcon } from '@heroicons/react/24/outline';
 import { clsx } from 'clsx';
+import { AIAnalysis } from '@/types';
 
 interface AIAnalysisButtonProps {
   countryCode: string;
   countryName: string;
-  onAnalysisComplete?: () => void;
+  onPositionsRefresh?: () => void;
   className?: string;
 }
 
 export function AIAnalysisButton({
   countryCode,
   countryName,
-  onAnalysisComplete,
+  onPositionsRefresh,
   className,
 }: AIAnalysisButtonProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [lastAnalysis, setLastAnalysis] = useState<any>(null);
+  const [lastAnalysis, setLastAnalysis] = useState<AIAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const runAIAnalysis = async () => {
@@ -44,10 +45,12 @@ export function AIAnalysisButton({
       }
       
       setLastAnalysis(result.analysis);
-      onAnalysisComplete?.();
       
-    } catch (err: any) {
-      setError(err.message);
+      // Only refresh chart positions, not the entire page
+      onPositionsRefresh?.();
+      
+    } catch (err: unknown) {
+      setError(err instanceof Error ? err.message : 'Analysis failed');
     } finally {
       setIsAnalyzing(false);
     }
@@ -109,7 +112,7 @@ export function AIAnalysisButton({
             <strong>Error:</strong> {error}
           </div>
           {error.includes('GEMINI_API_KEY') && (
-            <div className="text-gray-600 mt-1">
+            <div className="text-red-500 mt-1">
               Please configure your Gemini API key in .env.local
             </div>
           )}

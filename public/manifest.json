@@ -1,7 +1,7 @@
 {
-  "name": "Global Investment Clock",
-  "short_name": "Investment Clock",
-  "description": "Real-time economic positioning across global markets",
+  "name": "du.finance",
+  "short_name": "du.finance",
+  "description": "Economics & Investment Research Lab",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

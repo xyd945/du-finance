@@ -11,6 +11,7 @@ interface MacroWidgetsProps {
   countryData: CountryData | null;
   isLoading?: boolean;
   onRefresh?: () => void;
+  onPositionsRefresh?: () => void;
   className?: string;
 }
 
@@ -18,6 +19,7 @@ export function MacroWidgets({
   countryData,
   isLoading = false,
   onRefresh,
+  onPositionsRefresh,
   className,
 }: MacroWidgetsProps) {
   if (!countryData) {
@@ -37,7 +39,7 @@ export function MacroWidgets({
             )}
           >
             <ArrowPathIcon
-              className={clsx('h-4 w-4', isLoading && 'animate-spin')}
+              className={clsx('h-4 w-4 text-gray-700', isLoading && 'animate-spin')}
             />
           </button>
         </div>
@@ -57,7 +59,7 @@ export function MacroWidgets({
           <h2 className="text-xl font-semibold text-gray-900">
             Economic Indicators
           </h2>
-          <p className="text-sm text-gray-600">{countryData.country_name}</p>
+          <p className="text-sm text-gray-800">{countryData.country_name}</p>
         </div>
         <button
           onClick={onRefresh}
@@ -69,7 +71,7 @@ export function MacroWidgets({
           )}
         >
           <ArrowPathIcon
-            className={clsx('h-4 w-4', isLoading && 'animate-spin')}
+            className={clsx('h-4 w-4 text-gray-700', isLoading && 'animate-spin')}
           />
         </button>
       </div>
@@ -85,7 +87,7 @@ export function MacroWidgets({
         <AIAnalysisButton
           countryCode={countryData.country_code}
           countryName={countryData.country_name}
-          onAnalysisComplete={onRefresh}
+          onPositionsRefresh={onPositionsRefresh}
         />
       </div>
 

@@ -116,6 +116,15 @@ export interface CountryConfig {
   enabled: boolean;
 }
 
+// AI Analysis Interface
+export interface AIAnalysis {
+  growth_trend: number;
+  inflation_trend: number;
+  quadrant: Quadrant;
+  confidence: number;
+  reasoning: string;
+}
+
 // App Configuration
 export const COUNTRIES: CountryConfig[] = [
   {

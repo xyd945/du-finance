@@ -202,7 +202,7 @@ export function InvestmentClock({
                   x={position.x}
                   y={position.y - 12}
                   textAnchor="middle"
-                  className="text-xs font-medium fill-gray-700 pointer-events-none"
+                  className="text-xs font-medium fill-gray-900 pointer-events-none"
                 >
                   {position.country_code}
                 </text>
@@ -217,7 +217,7 @@ export function InvestmentClock({
               x={CHART_SIZE / 2}
               y={CHART_SIZE - 10}
               textAnchor="middle"
-              className="text-sm font-medium fill-gray-600"
+              className="text-sm font-medium fill-gray-800"
             >
               Inflation Trend →
             </text>
@@ -228,7 +228,7 @@ export function InvestmentClock({
               y={CHART_SIZE / 2}
               textAnchor="middle"
               transform={`rotate(-90, 15, ${CHART_SIZE / 2})`}
-              className="text-sm font-medium fill-gray-600"
+              className="text-sm font-medium fill-gray-800"
             >
               ← Growth Trend
             </text>
@@ -277,8 +277,8 @@ export function InvestmentClock({
           <div key={config.key} className="flex items-center space-x-2">
             <div className={clsx('w-4 h-4 rounded', config.color)} />
             <div>
-              <div className="font-medium">{config.label}</div>
-              <div className="text-gray-600 text-xs">{config.description}</div>
+              <div className="font-medium text-gray-900">{config.label}</div>
+              <div className="text-gray-800 text-xs">{config.description}</div>
             </div>
           </div>
         ))}

@@ -1,142 +1,123 @@
-# Global Investment Clock
+# du.finance
 
-A production-ready Next.js application that visualizes each country's current position within the Merrill Lynch Investment Clock framework, providing real-time economic positioning across global markets.
+**Economics & Investment Research Lab**
 
-## Features
+du.finance is a cutting-edge research platform that democratizes institutional-grade economic analysis tools. Our mission is to make sophisticated investment research accessible to everyone, from individual investors to portfolio managers.
 
-- **Interactive Investment Clock**: Four-quadrant visualization showing Recovery, Overheat, Stagflation, and Recession phases
-- **Real-time Economic Indicators**: Latest PMI, CPI, Core PCE, and GDPNow data with historical sparklines
-- **Country Positioning**: Visual representation of countries on the investment clock with flag icons
-- **Responsive Design**: Mobile-first design that works seamlessly across all devices
-- **Live Data Updates**: Automatic data refresh every 5 minutes with SWR
-- **Type-safe**: Built with TypeScript and Zod for runtime validation
+## About du.finance Labs
 
-## Tech Stack
+We bridge the gap between complex economic theory and practical investment decisions by building intuitive, data-driven tools that provide clarity in an increasingly complex global economy.
 
-- **Framework**: Next.js 14 with App Router
-- **Language**: TypeScript (strict mode)
-- **Styling**: Tailwind CSS
-- **Database**: Supabase PostgreSQL
-- **Data Fetching**: SWR for real-time updates
-- **Charts**: Recharts with D3 scales
-- **UI Components**: Headless UI, Heroicons
-- **Validation**: Zod schemas
-- **Deployment**: Optimized for Vercel Edge
+**What we do:**
+- **Economic Analysis**: Transform raw economic data into actionable insights
+- **Investment Research**: Apply proven institutional frameworks to modern markets  
+- **Data Visualization**: Make complex economic relationships easy to understand
+- **AI-Powered Insights**: Leverage machine learning for smarter economic analysis
 
-## Setup Instructions
+---
 
-### 1. Database Setup
+## The Merrill Lynch Investment Clock
 
-1. Create a new Supabase project at [supabase.com](https://supabase.com)
-2. Run the SQL script from `database-setup.sql` in your Supabase SQL Editor
-3. Get your project URL and anon key from the Supabase dashboard
+Our flagship tool implements the legendary **Merrill Lynch Investment Clock**, a framework that has guided institutional investors for decades in understanding economic cycles and asset allocation.
 
-### 2. Environment Configuration
+### 🕐 The Four Quadrants
 
-1. Copy `env.example` to `.env.local`:
+The Investment Clock maps economic conditions across two key dimensions:
 
-   ```bash
-   cp env.example .env.local
-   ```
+**📈 Growth Trend** (Y-axis): Economic expansion vs. contraction  
+**📊 Inflation Trend** (X-axis): Rising vs. falling price pressures
 
-2. Update `.env.local` with your Supabase credentials:
-   ```env
-   NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
-   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
-   NEXT_PUBLIC_APP_URL=http://localhost:3000
-   ```
+This creates four distinct economic environments:
 
-### 3. Install Dependencies
+#### 🌱 **Recovery** (↗️ Growth ↗️, ↘️ Inflation ↘️)
+- **Characteristics**: Economy accelerating, inflation falling
+- **Traditional Assets**: Stocks outperform bonds  
+- **Environment**: Central banks accommodative, corporate profits rising
+- **Indicators**: Rising PMI, falling unemployment, stable prices
 
-```bash
-npm install
-```
+#### 🔥 **Overheat** (↗️ Growth ↗️, ↗️ Inflation ↗️)  
+- **Characteristics**: Strong growth but rising inflation concerns
+- **Traditional Assets**: Commodities shine, bonds underperform
+- **Environment**: Central banks becoming hawkish, capacity constraints
+- **Indicators**: High PMI, rising wages, increasing CPI
 
-### 4. Run Development Server
+#### 🌊 **Stagflation** (↘️ Growth ↘️, ↗️ Inflation ↗️)
+- **Characteristics**: Slowing growth with persistent inflation
+- **Traditional Assets**: Cash and inflation-hedged assets preferred
+- **Environment**: Policy dilemma, supply-side constraints
+- **Indicators**: Falling PMI, high inflation, rising unemployment
 
-```bash
-npm run dev
-```
+#### ❄️ **Recession** (↘️ Growth ↘️, ↘️ Inflation ↘️)
+- **Characteristics**: Economic contraction, deflationary pressures  
+- **Traditional Assets**: Government bonds perform best
+- **Environment**: Central banks cutting rates, fiscal stimulus
+- **Indicators**: Low PMI, falling CPI, rising unemployment
 
-Open [http://localhost:3000](http://localhost:3000) in your browser.
+### 📍 How Countries Are Positioned
 
-## Data Management
+Each country's position on the clock is determined by analyzing key economic indicators:
 
-The application uses three main database tables:
+- **Composite PMI**: Overall economic momentum
+- **Manufacturing PMI**: Industrial sector health  
+- **CPI Year-over-Year**: Inflation rate
+- **Core PCE/CPI**: Underlying inflation trends
+- **GDPNow**: Real-time growth estimates
 
-- **economic_indicators**: Current economic indicator values
-- **historical_indicators**: Historical data for sparkline charts
-- **investment_clock_positions**: Country positions on the investment clock
+Our platform uses both **rule-based calculations** and **AI-powered analysis** to determine the most accurate positioning.
 
-### Adding New Countries
+### 🎯 How to Use the Investment Clock
 
-1. Insert economic indicators for the new country in the database
-2. Add the country to the `COUNTRIES` array in `src/types/index.ts`
-3. Ensure flag emoji mapping exists in `src/components/country-selector.tsx`
+1. **Identify Current Position**: See where your country/region stands today
+2. **Understand the Environment**: Each quadrant suggests different market dynamics
+3. **Anticipate Transitions**: Watch for movement between quadrants
+4. **Adjust Strategy**: Align your portfolio with the economic cycle
+5. **Monitor Indicators**: Track the underlying data driving position changes
 
-### Updating Data
+### 🤖 AI-Enhanced Analysis
 
-Currently, data is updated manually through the Supabase dashboard. You can:
+Our Google Gemini-powered analysis goes beyond simple calculations by:
 
-1. Use the Supabase dashboard to update indicator values
-2. Insert new historical data points for sparklines
-3. Update investment clock positions
+- **Contextual Understanding**: Considers global events and interconnections
+- **Pattern Recognition**: Identifies complex relationships in economic data
+- **Confidence Scoring**: Provides transparency in analytical certainty
+- **Reasoning**: Explains the logic behind each positioning decision
 
-## Available Scripts
+---
 
-- `npm run dev` - Start development server with Turbopack
-- `npm run build` - Build for production
-- `npm run start` - Start production server
-- `npm run lint` - Run ESLint
-- `npm run lint:fix` - Fix ESLint errors
-- `npm run format` - Format code with Prettier
-- `npm run type-check` - Run TypeScript type checking
+## Getting Started
 
-## Deployment
+Ready to explore the Global Investment Clock?
 
-### Vercel (Recommended)
+1. **📖 Setup**: Follow our [Setup Guide](SETUP_GUIDE.md) to deploy your own instance
+2. **🔧 Configure**: Set up your Supabase database and environment variables  
+3. **📊 Analyze**: Start with USA data, then add your countries of interest
+4. **🤖 Experiment**: Try the AI analysis for deeper insights
 
-1. Connect your GitHub repository to Vercel
-2. Add environment variables in Vercel dashboard:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
-   - `NEXT_PUBLIC_APP_URL` (your domain)
-3. Deploy automatically on push to main branch
+## Technical Foundation
 
-### Other Platforms
+Built with institutional-grade reliability:
 
-The application is optimized for Edge Runtime and should work on any platform supporting Next.js 14.
+- **Next.js 14**: Production-ready React framework
+- **TypeScript**: Type-safe development
+- **Supabase**: Real-time PostgreSQL database
+- **Google Gemini**: Advanced AI analysis
+- **Tailwind CSS**: Responsive, professional design
 
-## Project Structure
+## Contributing to Economic Research
 
-```
-src/
-├── app/                 # Next.js app router
-├── components/          # React components
-├── hooks/               # Custom React hooks
-├── lib/                 # Utility libraries
-└── types/               # TypeScript types and Zod schemas
+Join our mission to democratize economic analysis:
 
-public/                  # Static assets
-database-setup.sql       # Database schema
-```
+- **🐛 Report Issues**: Help us improve the platform
+- **💡 Suggest Features**: What analysis tools do you need?
+- **📈 Share Data**: Contribute economic indicators for new regions
+- **🧠 Research**: Propose new analytical frameworks
 
-## Contributing
+## License & Support
 
-1. Fork the repository
-2. Create a feature branch
-3. Make your changes
-4. Run tests and linting
-5. Submit a pull request
+This project is open source under the MIT License. 
 
-## License
+**Questions?** Check our [Setup Guide](SETUP_GUIDE.md) or create an issue.
 
-MIT License - see LICENSE file for details.
+---
 
-## Support
-
-For issues and questions:
-
-- Check the GitHub Issues
-- Review the database setup instructions
-- Ensure environment variables are configured correctly
+*Built with ❤️ by the du.finance team*

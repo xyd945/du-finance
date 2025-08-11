@@ -1,4 +1,4 @@
-# Global Investment Clock - Setup Guide
+# du.finance - Setup Guide
 
 Follow these steps to get your Global Investment Clock application up and running.
 
@@ -6,6 +6,7 @@ Follow these steps to get your Global Investment Clock application up and runnin
 
 - Node.js 18+ installed
 - A Supabase account (free tier is sufficient)
+- Google AI Studio account (for Gemini API key)
 - Git (for version control)
 
 ## Step 1: Clone and Install
@@ -30,14 +31,21 @@ npm install
 
 1. Open your Supabase project dashboard
 2. Go to the **SQL Editor** (left sidebar)
-3. Copy the entire content from `database-setup.sql`
+3. Copy the entire content from `supabase-setup.sql`
 4. Paste it into the SQL Editor and click **Run**
-5. Verify that the tables were created successfully
+5. Verify that all tables were created successfully
 
 ### 2.3 Get API Credentials
 
 1. In your Supabase dashboard, go to **Settings** → **API**
 2. Copy the **Project URL** and **Anon public** key
+
+## Step 2.5: Get Google Gemini API Key
+
+1. Go to [Google AI Studio](https://aistudio.google.com)
+2. Sign in with your Google account
+3. Create a new API key
+4. Copy the API key for later use
 
 ## Step 3: Environment Configuration
 
@@ -50,26 +58,32 @@ cp env.example .env.local
 
 ### 3.2 Update Environment Variables
 
-Edit `.env.local` with your Supabase credentials:
+Edit `.env.local` with your API credentials:
 
 ```env
 # Replace with your actual Supabase project URL
-NEXT_PUBLIC_SUPABASE_URL=https://your-project-id.supabase.co
+SUPABASE_URL=https://your-project-id.supabase.co
 
 # Replace with your actual Supabase anon key
-NEXT_PUBLIC_SUPABASE_ANON_KEY=your-anon-key-here
+SUPABASE_ANON_KEY=your-anon-key-here
+
+# Replace with your Google Gemini API key
+GEMINI_API_KEY=your-gemini-api-key-here
 
 # For local development
 NEXT_PUBLIC_APP_URL=http://localhost:3000
 ```
 
+**⚠️ Security Note**: We use server-side API routes with the anon key and Row Level Security (RLS) policies to ensure secure database access.
+
 ## Step 4: Verify Data
 
 After running the database setup, you should have:
 
-- Sample data for the USA in all three tables
-- 12 months of historical data for sparklines
-- One investment clock position
+- Sample economic indicators for the USA
+- 12 months of historical data for sparklines  
+- One sample investment clock position
+- AI analysis history table ready for use
 
 ## Step 5: Run the Application
 
@@ -127,8 +141,9 @@ To add additional countries:
 
 2. **Set Environment Variables:**
    In your Vercel dashboard, add the environment variables:
-   - `NEXT_PUBLIC_SUPABASE_URL`
-   - `NEXT_PUBLIC_SUPABASE_ANON_KEY`
+   - `SUPABASE_URL`
+   - `SUPABASE_ANON_KEY`
+   - `GEMINI_API_KEY`
    - `NEXT_PUBLIC_APP_URL` (your domain)
 
 3. **Deploy:**

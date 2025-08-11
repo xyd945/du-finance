@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { supabase } from '@/lib/supabase';
+import { getSupabaseClient } from '@/lib/supabase';
 import { fetchEconomicIndicators } from '@/lib/api';
 import { storeAIAnalysis } from '@/lib/economic-analysis';
 
@@ -25,6 +25,7 @@ export async function POST(request: NextRequest) {
     }
     
     // Use AI to analyze and store in history
+    const supabase = getSupabaseClient();
     const analysis = await storeAIAnalysis(
       supabase,
       countryCode,
@@ -38,11 +39,11 @@ export async function POST(request: NextRequest) {
       message: `Successfully updated ${countryCode} investment clock position`,
     });
     
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error in analyze-position API:', error);
     
     return NextResponse.json(
-      { error: error.message || 'Internal server error' },
+      { error: error instanceof Error ? error.message : 'Internal server error' },
       { status: 500 }
     );
   }

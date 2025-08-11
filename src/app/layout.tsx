@@ -13,34 +13,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Global Investment Clock - Real-time Economic Positioning',
+  title: 'du.finance - Economics & Investment Research Lab',
   description:
-    'Track global economic positioning using the Merrill Lynch Investment Clock. Monitor growth and inflation trends across countries with real-time economic indicators.',
+    'Professional economic and investment research platform. Track global economic positioning using the Merrill Lynch Investment Clock with real-time economic indicators.',
   keywords: [
-    'investment',
-    'economics',
+    'du.finance',
+    'economic research',
+    'investment research',
     'merrill lynch',
     'investment clock',
     'economic indicators',
     'global markets',
+    'economic analysis',
   ],
-  authors: [{ name: 'DU Finance' }],
-  creator: 'DU Finance',
-  publisher: 'DU Finance',
+  authors: [{ name: 'du.finance' }],
+  creator: 'du.finance',
+  publisher: 'du.finance',
   metadataBase: new URL(
     process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
   ),
   openGraph: {
-    title: 'Global Investment Clock',
-    description: 'Real-time economic positioning across global markets',
+    title: 'du.finance - Economics & Investment Research Lab',
+    description: 'Professional economic and investment research platform',
     type: 'website',
     locale: 'en_US',
-    siteName: 'Global Investment Clock',
+    siteName: 'du.finance',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Global Investment Clock',
-    description: 'Real-time economic positioning across global markets',
+    title: 'du.finance - Economics & Investment Research Lab',
+    description: 'Professional economic and investment research platform',
   },
   robots: {
     index: true,

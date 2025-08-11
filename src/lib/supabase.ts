@@ -1,19 +1,35 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient, SupabaseClient } from '@supabase/supabase-js';
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+let supabaseInstance: SupabaseClient | null = null;
 
-// Create the Supabase client with fallback values for build time
-export const supabase = createClient(
-  supabaseUrl || 'https://dummy.supabase.co',
-  supabaseAnonKey || 'dummy-anon-key'
-);
+function createSupabaseClient(): SupabaseClient {
+  const supabaseUrl = process.env.SUPABASE_URL;
+  const supabaseAnonKey = process.env.SUPABASE_ANON_KEY;
 
-// Log warning if environment variables are missing
-if (!supabaseUrl || !supabaseAnonKey) {
-  console.warn(
-    'Supabase environment variables not found. Please check your .env.local file.'
-  );
+  if (!supabaseUrl || !supabaseAnonKey) {
+    throw new Error('Missing Supabase environment variables. Please check your .env.local file.');
+  }
+
+  return createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: false,
+      persistSession: false
+    }
+  });
 }
+
+// Lazy initialization of Supabase client
+export function getSupabaseClient(): SupabaseClient {
+  if (!supabaseInstance) {
+    supabaseInstance = createSupabaseClient();
+  }
+  return supabaseInstance;
+}
+
+// Legacy export for compatibility
+export const supabase = {
+  from: (table: string) => getSupabaseClient().from(table),
+  // Add other methods as needed
+};
 
 export default supabase;

@@ -25,7 +25,7 @@ export function CountrySelector({
     <div className={clsx('w-48', className)}>
       <Listbox value={selectedCountry} onChange={onCountrySelect}>
         <div className="relative">
-          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm">
+          <Listbox.Button className="relative w-full cursor-default rounded-lg bg-white py-2 pl-3 pr-10 text-left border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 sm:text-sm text-gray-900">
             <span className="flex items-center">
               {selectedCountryData && (
                 <span className="text-lg mr-2">
@@ -38,7 +38,7 @@ export function CountrySelector({
             </span>
             <span className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
               <ChevronUpDownIcon
-                className="h-5 w-5 text-gray-400"
+                className="h-5 w-5 text-gray-600"
                 aria-hidden="true"
               />
             </span>

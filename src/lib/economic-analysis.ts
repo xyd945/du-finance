@@ -1,6 +1,7 @@
 import { geminiModel } from './gemini';
 import { EconomicIndicator, Quadrant } from '@/types';
 import { z } from 'zod';
+import type { SupabaseClient } from '@supabase/supabase-js';
 
 // Schema for AI response validation
 const AIAnalysisSchema = z.object({
@@ -100,9 +101,7 @@ Please respond ONLY with a valid JSON object in this exact format:
  */
 function fallbackAnalysis(indicators: EconomicIndicator[]): AIAnalysis {
   const pmiComposite = indicators.find(i => i.indicator_type === 'pmi_composite');
-  const pmiManufacturing = indicators.find(i => i.indicator_type === 'pmi_manufacturing');
   const cpiYoy = indicators.find(i => i.indicator_type === 'cpi_yoy');
-  const corePce = indicators.find(i => i.indicator_type === 'core_pce');
   
   // Simple rule-based growth assessment
   let growthTrend = 0;
@@ -136,7 +135,7 @@ function fallbackAnalysis(indicators: EconomicIndicator[]): AIAnalysis {
  * Store AI analysis results in history table (no longer updates positions table)
  */
 export async function storeAIAnalysis(
-  supabase: any,
+  supabaseClient: SupabaseClient,
   countryCode: string,
   countryName: string,
   indicators: EconomicIndicator[]
@@ -144,7 +143,7 @@ export async function storeAIAnalysis(
   const analysis = await analyzeEconomicPosition(indicators, countryName);
   
   // Log to AI analysis history only (positions are now calculated on-the-fly)
-  const { error: historyError } = await supabase
+  const { error: historyError } = await supabaseClient
     .from('ai_analysis_history')
     .insert({
       country_code: countryCode.toUpperCase(),

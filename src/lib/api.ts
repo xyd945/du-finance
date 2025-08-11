@@ -1,4 +1,4 @@
-import { supabase } from './supabase';
+import { getSupabaseClient } from './supabase';
 import { calculateInvestmentClockPosition } from './investment-clock-calculator';
 import {
   EconomicIndicator,
@@ -6,7 +6,6 @@ import {
   HistoricalIndicator,
   HistoricalIndicatorResponseSchema,
   InvestmentClockPosition,
-  InvestmentClockPositionResponseSchema,
   CountryData,
   IndicatorType,
   ApiError,
@@ -34,6 +33,7 @@ export async function fetchEconomicIndicators(
   countryCode: string
 ): Promise<EconomicIndicator[]> {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('economic_indicators')
       .select('*')
@@ -62,6 +62,7 @@ export async function fetchHistoricalIndicators(
   limit = 12
 ): Promise<HistoricalIndicator[]> {
   try {
+    const supabase = getSupabaseClient();
     let query = supabase
       .from('historical_indicators')
       .select('*')
@@ -134,6 +135,7 @@ export async function fetchLatestAIAnalysis(
   countryCode: string
 ): Promise<AIAnalysisResult | null> {
   try {
+    const supabase = getSupabaseClient();
     const { data, error } = await supabase
       .from('ai_analysis_history')
       .select('*')
@@ -163,6 +165,7 @@ export async function fetchAllInvestmentClockPositions(): Promise<
   InvestmentClockPosition[]
 > {
   try {
+    const supabase = getSupabaseClient();
     // Get all unique countries with economic indicators
     const { data: countries, error } = await supabase
       .from('economic_indicators')
@@ -194,7 +197,7 @@ export async function fetchAllInvestmentClockPositions(): Promise<
             country_name: aiAnalysis.country_name,
             growth_trend: aiAnalysis.growth_trend,
             inflation_trend: aiAnalysis.inflation_trend,
-            quadrant: aiAnalysis.quadrant as any,
+            quadrant: aiAnalysis.quadrant as 'recovery' | 'overheat' | 'stagflation' | 'recession',
             date: aiAnalysis.analysis_date,
             created_at: aiAnalysis.created_at,
             updated_at: aiAnalysis.created_at,

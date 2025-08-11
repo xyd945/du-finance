@@ -1,40 +1,36 @@
 import useSWR from 'swr';
-import {
-  fetchCountryData,
-  fetchAllInvestmentClockPositions,
-  withRetry,
-  handleApiError,
-} from '@/lib/api';
-import { CountryData, InvestmentClockPosition, ApiError } from '@/types';
+import { CountryData, InvestmentClockPosition, EconomicIndicator, ApiError } from '@/types';
 
-/**
- * SWR configuration
- */
 const swrConfig = {
-  refreshInterval: 5 * 60 * 1000, // Refresh every 5 minutes
-  revalidateOnFocus: true,
+  revalidateOnFocus: false,
   revalidateOnReconnect: true,
-  dedupingInterval: 60 * 1000, // Dedupe requests for 1 minute
-  errorRetryInterval: 30 * 1000, // Retry failed requests every 30 seconds
+  dedupingInterval: 1000, // Reduced to 1 second for faster updates
   errorRetryCount: 3,
-  onError: (error: unknown) => {
-    console.error('SWR Error:', handleApiError(error));
-  },
+};
+
+// Generic fetcher for API routes
+const fetcher = async (url: string) => {
+  const response = await fetch(url);
+  if (!response.ok) {
+    const error = await response.json().catch(() => ({ error: 'Network error' }));
+    throw new Error(error.error || `HTTP ${response.status}`);
+  }
+  return response.json();
 };
 
 /**
- * Hook to fetch comprehensive country data
+ * Hook to fetch complete country data
  */
 export function useCountryData(countryCode: string) {
-  const { data, error, isLoading, mutate } = useSWR<CountryData | null>(
-    countryCode ? `country-data-${countryCode}` : null,
-    () => withRetry(() => fetchCountryData(countryCode)),
+  const { data, error, isLoading, mutate } = useSWR<CountryData>(
+    countryCode ? `/api/countries/${countryCode}` : null,
+    fetcher,
     swrConfig
   );
 
   return {
     data: data || null,
-    error: error ? handleApiError(error) : null,
+    error: error ? { message: error.message, code: 'FETCH_ERROR' } : null,
     isLoading,
     refresh: mutate,
   };
@@ -45,14 +41,32 @@ export function useCountryData(countryCode: string) {
  */
 export function useAllInvestmentClockPositions() {
   const { data, error, isLoading, mutate } = useSWR<InvestmentClockPosition[]>(
-    'all-investment-clock-positions',
-    () => withRetry(() => fetchAllInvestmentClockPositions()),
+    '/api/positions',
+    fetcher,
     swrConfig
   );
 
   return {
     data: data || [],
-    error: error ? handleApiError(error) : null,
+    error: error ? { message: error.message, code: 'FETCH_ERROR' } : null,
+    isLoading,
+    refresh: mutate,
+  };
+}
+
+/**
+ * Hook to fetch economic indicators for AI analysis
+ */
+export function useEconomicIndicators(countryCode: string) {
+  const { data, error, isLoading, mutate } = useSWR<EconomicIndicator[]>(
+    countryCode ? `/api/indicators/${countryCode}` : null,
+    fetcher,
+    swrConfig
+  );
+
+  return {
+    data: data || [],
+    error: error ? { message: error.message, code: 'FETCH_ERROR' } : null,
     isLoading,
     refresh: mutate,
   };
@@ -63,7 +77,7 @@ export function useAllInvestmentClockPositions() {
  * For proper multi-country support, consider using a different pattern
  * or call this hook separately for each country in the component
  */
-export function useMultipleCountriesData(_countryCodes: string[]) {
+export function useMultipleCountriesData() {
   // For now, we'll just return empty data and let components handle individual hooks
   // This avoids the React hooks rules violation
   return {
@@ -75,14 +89,17 @@ export function useMultipleCountriesData(_countryCodes: string[]) {
 }
 
 /**
- * Helper hook for real-time updates
+ * Hook for real-time updates with manual refresh capability
  */
 export function useRealTimeUpdates() {
-  const { refresh: refreshAllPositions } = useAllInvestmentClockPositions();
-
   const triggerGlobalRefresh = () => {
-    refreshAllPositions();
-    // You can add more global refresh logic here
+    // Trigger a global revalidation of all SWR hooks
+    import('swr').then(({ mutate }) => {
+      // Specifically invalidate positions data first
+      mutate('/api/positions', undefined, { revalidate: true });
+      // Then invalidate all other data
+      mutate(() => true, undefined, { revalidate: true });
+    });
   };
 
   return {
