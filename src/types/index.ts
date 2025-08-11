@@ -174,6 +174,14 @@ export const INDICATOR_CONFIGS: IndicatorConfig[] = [
   },
 ];
 
+// Asset allocation priority for each asset class
+export interface AssetAllocation {
+  asset: string;
+  priority: number; // 1 = highest priority, 4 = lowest priority
+  reasoning: string;
+  icon: string;
+}
+
 // Investment Clock Quadrant Configurations
 export interface QuadrantConfig {
   key: Quadrant;
@@ -185,6 +193,8 @@ export interface QuadrantConfig {
     x: 'left' | 'right';
     y: 'top' | 'bottom';
   };
+  assetAllocation: AssetAllocation[];
+  investmentStrategy: string;
 }
 
 export const QUADRANT_CONFIGS: QuadrantConfig[] = [
@@ -195,6 +205,33 @@ export const QUADRANT_CONFIGS: QuadrantConfig[] = [
     color: 'bg-green-100',
     textColor: 'text-green-800',
     position: { x: 'left', y: 'top' },
+    investmentStrategy: 'Focus on equities as corporate earnings accelerate while interest rates remain low',
+    assetAllocation: [
+      {
+        asset: 'Stocks',
+        priority: 1,
+        reasoning: 'Corporate earnings improve with economic recovery',
+        icon: '📈'
+      },
+      {
+        asset: 'Bonds',
+        priority: 2,
+        reasoning: 'Still attractive as rates haven\'t risen yet',
+        icon: '🏛️'
+      },
+      {
+        asset: 'Commodities',
+        priority: 3,
+        reasoning: 'Moderate allocation as demand picks up',
+        icon: '🥇'
+      },
+      {
+        asset: 'Cash',
+        priority: 4,
+        reasoning: 'Low returns in recovering economy',
+        icon: '💵'
+      }
+    ]
   },
   {
     key: 'overheat',
@@ -203,6 +240,33 @@ export const QUADRANT_CONFIGS: QuadrantConfig[] = [
     color: 'bg-red-100',
     textColor: 'text-red-800',
     position: { x: 'right', y: 'top' },
+    investmentStrategy: 'Shift towards commodities and real assets as inflation accelerates and rates rise',
+    assetAllocation: [
+      {
+        asset: 'Commodities',
+        priority: 1,
+        reasoning: 'Best inflation hedge during economic expansion',
+        icon: '🥇'
+      },
+      {
+        asset: 'Stocks',
+        priority: 2,
+        reasoning: 'Still positive but facing headwinds from rising rates',
+        icon: '📈'
+      },
+      {
+        asset: 'Cash',
+        priority: 3,
+        reasoning: 'Rising short-term rates improve returns',
+        icon: '💵'
+      },
+      {
+        asset: 'Bonds',
+        priority: 4,
+        reasoning: 'Vulnerable to rising interest rates',
+        icon: '🏛️'
+      }
+    ]
   },
   {
     key: 'stagflation',
@@ -211,6 +275,33 @@ export const QUADRANT_CONFIGS: QuadrantConfig[] = [
     color: 'bg-orange-100',
     textColor: 'text-orange-800',
     position: { x: 'right', y: 'bottom' },
+    investmentStrategy: 'Defensive positioning with cash and commodities while avoiding bonds and stocks',
+    assetAllocation: [
+      {
+        asset: 'Cash',
+        priority: 1,
+        reasoning: 'Safety and liquidity during economic uncertainty',
+        icon: '💵'
+      },
+      {
+        asset: 'Commodities',
+        priority: 2,
+        reasoning: 'Continued inflation protection despite weak growth',
+        icon: '🥇'
+      },
+      {
+        asset: 'Bonds',
+        priority: 3,
+        reasoning: 'Some government bonds for safety',
+        icon: '🏛️'
+      },
+      {
+        asset: 'Stocks',
+        priority: 4,
+        reasoning: 'Weak earnings and multiple compression',
+        icon: '📈'
+      }
+    ]
   },
   {
     key: 'recession',
@@ -219,6 +310,33 @@ export const QUADRANT_CONFIGS: QuadrantConfig[] = [
     color: 'bg-blue-100',
     textColor: 'text-blue-800',
     position: { x: 'left', y: 'bottom' },
+    investmentStrategy: 'Prioritize bonds and cash for safety, prepare for next recovery cycle',
+    assetAllocation: [
+      {
+        asset: 'Bonds',
+        priority: 1,
+        reasoning: 'Declining rates boost bond prices and provide safety',
+        icon: '🏛️'
+      },
+      {
+        asset: 'Cash',
+        priority: 2,
+        reasoning: 'Liquidity and optionality for opportunities',
+        icon: '💵'
+      },
+      {
+        asset: 'Stocks',
+        priority: 3,
+        reasoning: 'Selective opportunities at attractive valuations',
+        icon: '📈'
+      },
+      {
+        asset: 'Commodities',
+        priority: 4,
+        reasoning: 'Weak demand during economic contraction',
+        icon: '🥇'
+      }
+    ]
   },
 ];
 
