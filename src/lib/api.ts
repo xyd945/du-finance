@@ -12,6 +12,21 @@ import {
   ApiError,
 } from '@/types';
 
+// AI Analysis result type
+interface AIAnalysisResult {
+  id: number;
+  country_code: string;
+  country_name: string;
+  analysis_date: string;
+  growth_trend: number;
+  inflation_trend: number;
+  quadrant: string;
+  confidence: number;
+  reasoning: string;
+  economic_indicators: EconomicIndicator[];
+  created_at: string;
+}
+
 /**
  * Fetch economic indicators for a specific country
  */
@@ -113,6 +128,35 @@ export async function fetchInvestmentClockPosition(
 }
 
 /**
+ * Fetch latest AI analysis for a country from ai_analysis_history
+ */
+export async function fetchLatestAIAnalysis(
+  countryCode: string
+): Promise<AIAnalysisResult | null> {
+  try {
+    const { data, error } = await supabase
+      .from('ai_analysis_history')
+      .select('*')
+      .eq('country_code', countryCode.toUpperCase())
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single();
+
+    if (error) {
+      if (error.code === 'PGRST116') {
+        return null; // No AI analysis found
+      }
+      throw new Error(`Failed to fetch AI analysis: ${error.message}`);
+    }
+
+    return data;
+  } catch (error) {
+    console.error('Error fetching AI analysis:', error);
+    throw error;
+  }
+}
+
+/**
  * Fetch Investment Clock positions for all countries
  */
 export async function fetchAllInvestmentClockPositions(): Promise<
@@ -134,17 +178,37 @@ export async function fetchAllInvestmentClockPositions(): Promise<
       new Map(countries?.map(c => [c.country_code, c]) || []).values()
     );
 
-    // Calculate position for each country
+    // Get positions for each country (preferring AI analysis)
     const positions: InvestmentClockPosition[] = [];
     
     for (const country of uniqueCountries) {
       try {
-        const position = await fetchInvestmentClockPosition(country.country_code);
-        if (position) {
+        // First try to get AI analysis
+        const aiAnalysis = await fetchLatestAIAnalysis(country.country_code);
+        
+        if (aiAnalysis) {
+          // Use AI analysis if available
+          const position: InvestmentClockPosition = {
+            id: aiAnalysis.id,
+            country_code: aiAnalysis.country_code,
+            country_name: aiAnalysis.country_name,
+            growth_trend: aiAnalysis.growth_trend,
+            inflation_trend: aiAnalysis.inflation_trend,
+            quadrant: aiAnalysis.quadrant as any,
+            date: aiAnalysis.analysis_date,
+            created_at: aiAnalysis.created_at,
+            updated_at: aiAnalysis.created_at,
+          };
           positions.push(position);
+        } else {
+          // Fall back to rule-based calculation
+          const position = await fetchInvestmentClockPosition(country.country_code);
+          if (position) {
+            positions.push(position);
+          }
         }
       } catch (error) {
-        console.warn(`Failed to calculate position for ${country.country_code}:`, error);
+        console.warn(`Failed to get position for ${country.country_code}:`, error);
         // Continue with other countries
       }
     }

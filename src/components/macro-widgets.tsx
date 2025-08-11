@@ -74,40 +74,19 @@ export function MacroWidgets({
         </button>
       </div>
 
-      {/* Investment Clock Position Summary */}
-      <div className="p-4 bg-gray-50 rounded-lg border">
-        <h3 className="text-sm font-medium text-gray-700 mb-2">
-          Current Position
+      {/* AI Analysis Section */}
+      <div className="p-4 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border border-purple-200">
+        <h3 className="text-sm font-medium text-purple-800 mb-3">
+          🧠 AI Economic Analysis
         </h3>
-        <div className="grid grid-cols-2 gap-4 text-sm">
-          <div>
-            <div className="text-gray-600">Growth Trend</div>
-            <div className="font-semibold">
-              {countryData.position.growth_trend.toFixed(1)}
-            </div>
-          </div>
-          <div>
-            <div className="text-gray-600">Inflation Trend</div>
-            <div className="font-semibold">
-              {countryData.position.inflation_trend.toFixed(1)}
-            </div>
-          </div>
-        </div>
-        <div className="mt-2">
-          <div className="text-gray-600">Quadrant</div>
-          <div className="font-semibold capitalize">
-            {countryData.position.quadrant}
-          </div>
-        </div>
-        
-        {/* AI Analysis Button */}
-        <div className="mt-3 pt-3 border-t border-gray-200">
-          <AIAnalysisButton
-            countryCode={countryData.country_code}
-            countryName={countryData.country_name}
-            onAnalysisComplete={onRefresh}
-          />
-        </div>
+        <p className="text-xs text-purple-700 mb-3">
+          Use AI to analyze economic indicators and determine the optimal Investment Clock position
+        </p>
+        <AIAnalysisButton
+          countryCode={countryData.country_code}
+          countryName={countryData.country_name}
+          onAnalysisComplete={onRefresh}
+        />
       </div>
 
       {/* Position Calculation Breakdown */}

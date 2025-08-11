@@ -38,7 +38,7 @@ export function PositionBreakdown({ countryData, className }: PositionBreakdownP
         <div className="flex items-center space-x-2">
           <div className="w-2 h-2 bg-blue-500 rounded-full"></div>
           <span className="text-sm font-medium text-gray-700">
-            Calculated Position
+            Rule-Based Calculated Position
           </span>
         </div>
         <div className="flex items-center space-x-2">
