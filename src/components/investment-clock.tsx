@@ -6,6 +6,7 @@ import {
   InvestmentClockPosition,
   QUADRANT_CONFIGS,
   ClockPosition,
+  QuadrantConfig,
 } from '@/types';
 import { clsx } from 'clsx';
 
@@ -16,9 +17,56 @@ interface InvestmentClockProps {
   className?: string;
 }
 
+interface AssetAllocationCardProps {
+  quadrant: QuadrantConfig;
+}
+
 const CHART_SIZE = 400;
 const CHART_PADDING = 60;
 const CHART_INNER_SIZE = CHART_SIZE - 2 * CHART_PADDING;
+
+function AssetAllocationCard({ quadrant }: AssetAllocationCardProps) {
+  return (
+    <div className={clsx('rounded-lg border-2 p-4', quadrant.color, 'border-gray-200')}>
+      <div className="flex items-center space-x-2 mb-3">
+        <div className={clsx('w-3 h-3 rounded-full', quadrant.color)} />
+        <h3 className={clsx('font-semibold text-sm', quadrant.textColor)}>
+          {quadrant.label} Strategy
+        </h3>
+      </div>
+      
+      <p className="text-xs text-gray-700 mb-4 leading-relaxed">
+        {quadrant.investmentStrategy}
+      </p>
+      
+      <div className="space-y-2">
+        <h4 className="font-medium text-xs text-gray-800 mb-2">Asset Priority Ranking:</h4>
+        {quadrant.assetAllocation.map((allocation, index) => (
+          <div key={allocation.asset} className="flex items-center justify-between">
+            <div className="flex items-center space-x-2">
+              <span className="text-sm">{allocation.icon}</span>
+              <span className={clsx(
+                'text-xs font-medium',
+                allocation.priority === 1 ? 'text-green-700' :
+                allocation.priority === 2 ? 'text-blue-700' :
+                allocation.priority === 3 ? 'text-orange-700' : 'text-red-700'
+              )}>
+                #{allocation.priority} {allocation.asset}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+      
+      <div className="mt-3 pt-3 border-t border-gray-200">
+        <h5 className="text-xs font-medium text-gray-800 mb-1">Key Insight:</h5>
+        <p className="text-xs text-gray-600">
+          {quadrant.assetAllocation[0].reasoning}
+        </p>
+      </div>
+    </div>
+  );
+}
 
 export function InvestmentClock({
   positions,
@@ -282,6 +330,34 @@ export function InvestmentClock({
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Asset Allocation Guide */}
+      <div className="mt-8">
+        <div className="text-center mb-6">
+          <h2 className="text-lg font-bold text-gray-900 mb-2">
+            💰 Asset Allocation Strategy Guide
+          </h2>
+          <p className="text-sm text-gray-600">
+            Strategic asset allocation recommendations for each economic cycle phase
+          </p>
+        </div>
+        
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {QUADRANT_CONFIGS.map(config => (
+            <AssetAllocationCard key={config.key} quadrant={config} />
+          ))}
+        </div>
+        
+        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-start space-x-2">
+            <span className="text-blue-600 text-sm">💡</span>
+            <div className="text-xs text-blue-800">
+              <p className="font-medium mb-1">Investment Disclaimer:</p>
+              <p>These allocations are based on the Merrill Lynch Investment Clock framework. Past performance does not guarantee future results. Always consider your risk tolerance, investment horizon, and consult with financial advisors before making investment decisions.</p>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );
