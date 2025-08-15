@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { getSupabaseClient } from '@/lib/supabase';
 import { fetchEconomicIndicators } from '@/lib/api';
-import { storeAIAnalysis } from '@/lib/economic-analysis';
+import { storeEnhancedAIAnalysis } from '@/lib/economic-analysis';
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,9 +24,9 @@ export async function POST(request: NextRequest) {
       );
     }
     
-    // Use AI to analyze and store in history
+    // Use enhanced AI to analyze current and future positions
     const supabase = getSupabaseClient();
-    const analysis = await storeAIAnalysis(
+    const analysis = await storeEnhancedAIAnalysis(
       supabase,
       countryCode,
       countryName || countryCode,
@@ -36,7 +36,7 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       analysis,
-      message: `Successfully updated ${countryCode} investment clock position`,
+      message: `Successfully updated ${countryCode} investment clock position with future prediction`,
     });
     
   } catch (error: unknown) {

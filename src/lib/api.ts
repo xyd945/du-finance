@@ -9,6 +9,7 @@ import {
   CountryData,
   IndicatorType,
   ApiError,
+  FuturePosition,
 } from '@/types';
 
 // AI Analysis result type
@@ -22,6 +23,12 @@ interface AIAnalysisResult {
   quadrant: string;
   confidence: number;
   reasoning: string;
+  future_growth_trend?: number;
+  future_inflation_trend?: number;
+  future_quadrant?: string;
+  future_confidence?: number;
+  future_time_horizon?: string;
+  future_reasoning?: string;
   economic_indicators: EconomicIndicator[];
   created_at: string;
 }
@@ -146,10 +153,13 @@ export async function fetchLatestAIAnalysis(
 
     if (error) {
       if (error.code === 'PGRST116') {
+    
         return null; // No AI analysis found
       }
       throw new Error(`Failed to fetch AI analysis: ${error.message}`);
     }
+
+
 
     return data;
   } catch (error) {
@@ -224,16 +234,17 @@ export async function fetchAllInvestmentClockPositions(): Promise<
 }
 
 /**
- * Fetch comprehensive country data including position, indicators, and historical data
+ * Fetch comprehensive country data including position, indicators, historical data, and future position
  */
 export async function fetchCountryData(
   countryCode: string
 ): Promise<CountryData | null> {
   try {
-    const [position, indicators, historicalData] = await Promise.all([
+    const [position, indicators, historicalData, aiAnalysis] = await Promise.all([
       fetchInvestmentClockPosition(countryCode),
       fetchEconomicIndicators(countryCode),
       fetchHistoricalIndicators(countryCode),
+      fetchLatestAIAnalysis(countryCode),
     ]);
 
     if (!position) {
@@ -249,13 +260,40 @@ export async function fetchCountryData(
       groupedHistoricalData[item.indicator_type].push(item);
     });
 
-    return {
+    // Extract future position from AI analysis if available
+    let futurePosition: FuturePosition | undefined = undefined;
+    
+
+    
+    if (aiAnalysis && 
+        aiAnalysis.future_growth_trend != null &&
+        aiAnalysis.future_inflation_trend != null &&
+        aiAnalysis.future_quadrant &&
+        aiAnalysis.future_confidence != null &&
+        aiAnalysis.future_time_horizon &&
+        aiAnalysis.future_reasoning) {
+      futurePosition = {
+        growth_trend: Number(aiAnalysis.future_growth_trend),
+        inflation_trend: Number(aiAnalysis.future_inflation_trend),
+        quadrant: aiAnalysis.future_quadrant as 'recovery' | 'overheat' | 'stagflation' | 'recession',
+        confidence: Number(aiAnalysis.future_confidence),
+        time_horizon: aiAnalysis.future_time_horizon,
+        reasoning: aiAnalysis.future_reasoning,
+      };
+    }
+
+    const result = {
       country_code: countryCode.toUpperCase(),
       country_name: position.country_name,
       position,
+      future_position: futurePosition,
       indicators,
       historical_data: groupedHistoricalData,
     };
+    
+
+    
+    return result;
   } catch (error) {
     console.error('Error fetching country data:', error);
     throw error;

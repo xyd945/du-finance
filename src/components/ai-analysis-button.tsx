@@ -1,14 +1,15 @@
 'use client';
 
 import { useState } from 'react';
-import { SparklesIcon } from '@heroicons/react/24/outline';
+import { SparklesIcon, ClockIcon } from '@heroicons/react/24/outline';
 import { clsx } from 'clsx';
-import { AIAnalysis } from '@/types';
+import { EnhancedAIAnalysis } from '@/types';
 
 interface AIAnalysisButtonProps {
   countryCode: string;
   countryName: string;
   onPositionsRefresh?: () => void;
+  onCountryDataRefresh?: () => void;
   className?: string;
 }
 
@@ -16,10 +17,11 @@ export function AIAnalysisButton({
   countryCode,
   countryName,
   onPositionsRefresh,
+  onCountryDataRefresh,
   className,
 }: AIAnalysisButtonProps) {
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [lastAnalysis, setLastAnalysis] = useState<AIAnalysis | null>(null);
+  const [lastAnalysis, setLastAnalysis] = useState<EnhancedAIAnalysis | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const runAIAnalysis = async () => {
@@ -46,8 +48,9 @@ export function AIAnalysisButton({
       
       setLastAnalysis(result.analysis);
       
-      // Only refresh chart positions, not the entire page
+      // Refresh both chart positions and country data to show updated future position
       onPositionsRefresh?.();
+      onCountryDataRefresh?.();
       
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Analysis failed');
@@ -82,26 +85,58 @@ export function AIAnalysisButton({
 
       {/* Analysis Results */}
       {lastAnalysis && (
-        <div className="text-xs bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-md p-3">
-          <div className="font-semibold text-purple-800 mb-1">
-            ✨ AI Analysis Results
+        <div className="text-xs bg-gradient-to-r from-purple-50 to-blue-50 border border-purple-200 rounded-md p-3 space-y-3">
+          {/* Current Position Analysis */}
+          <div>
+            <div className="font-semibold text-purple-800 mb-1">
+              ✨ Current Position Analysis
+            </div>
+            <div className="space-y-1 text-purple-700">
+              <div>
+                <strong>Position:</strong> {lastAnalysis.quadrant} 
+                <span className="text-gray-500 ml-2">
+                  ({lastAnalysis.confidence}% confidence)
+                </span>
+              </div>
+              <div>
+                <strong>Growth:</strong> {lastAnalysis.growth_trend > 0 ? '+' : ''}{lastAnalysis.growth_trend}
+                <span className="mx-2">|</span>
+                <strong>Inflation:</strong> {lastAnalysis.inflation_trend > 0 ? '+' : ''}{lastAnalysis.inflation_trend}
+              </div>
+              <div className="text-xs text-gray-600 mt-1">
+                {lastAnalysis.reasoning}
+              </div>
+            </div>
           </div>
-          <div className="space-y-1 text-purple-700">
-            <div>
-              <strong>Position:</strong> {lastAnalysis.quadrant} 
-              <span className="text-gray-500 ml-2">
-                ({lastAnalysis.confidence}% confidence)
-              </span>
+
+          {/* Future Position Prediction */}
+          {lastAnalysis.future_position && (
+            <div className="border-t border-purple-200 pt-3">
+              <div className="font-semibold text-purple-800 mb-1 flex items-center space-x-1">
+                <ClockIcon className="h-3 w-3" />
+                <span>🔮 Future Position Prediction</span>
+                <span className="text-xs font-normal text-purple-600">
+                  ({lastAnalysis.future_position.time_horizon})
+                </span>
+              </div>
+              <div className="space-y-1 text-purple-700">
+                <div>
+                  <strong>Predicted Position:</strong> {lastAnalysis.future_position.quadrant} 
+                  <span className="text-gray-500 ml-2">
+                    ({lastAnalysis.future_position.confidence}% confidence)
+                  </span>
+                </div>
+                <div>
+                  <strong>Growth:</strong> {lastAnalysis.future_position.growth_trend > 0 ? '+' : ''}{lastAnalysis.future_position.growth_trend}
+                  <span className="mx-2">|</span>
+                  <strong>Inflation:</strong> {lastAnalysis.future_position.inflation_trend > 0 ? '+' : ''}{lastAnalysis.future_position.inflation_trend}
+                </div>
+                <div className="text-xs text-gray-600 mt-1">
+                  {lastAnalysis.future_position.reasoning}
+                </div>
+              </div>
             </div>
-            <div>
-              <strong>Growth:</strong> {lastAnalysis.growth_trend > 0 ? '+' : ''}{lastAnalysis.growth_trend}
-              <span className="mx-2">|</span>
-              <strong>Inflation:</strong> {lastAnalysis.inflation_trend > 0 ? '+' : ''}{lastAnalysis.inflation_trend}
-            </div>
-            <div className="text-xs text-gray-600 mt-1">
-              {lastAnalysis.reasoning}
-            </div>
-          </div>
+          )}
         </div>
       )}
 

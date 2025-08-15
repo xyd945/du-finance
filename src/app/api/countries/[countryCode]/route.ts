@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { fetchEconomicIndicators, fetchHistoricalIndicators, fetchInvestmentClockPosition } from '@/lib/api';
+import { fetchEconomicIndicators, fetchHistoricalIndicators, fetchInvestmentClockPosition, fetchLatestAIAnalysis } from '@/lib/api';
+import { FuturePosition } from '@/types';
 
 export async function GET(
   request: NextRequest,
@@ -16,9 +17,10 @@ export async function GET(
     }
 
     // Fetch data in parallel
-    const [indicators, position] = await Promise.all([
+    const [indicators, position, aiAnalysis] = await Promise.all([
       fetchEconomicIndicators(countryCode),
-      fetchInvestmentClockPosition(countryCode)
+      fetchInvestmentClockPosition(countryCode),
+      fetchLatestAIAnalysis(countryCode),
     ]);
 
     if (indicators.length === 0 || !position) {
@@ -41,13 +43,35 @@ export async function GET(
       historicalData[type] = historicalResults[index] || [];
     });
 
+    // Extract future position from AI analysis if available
+    let futurePosition: FuturePosition | undefined = undefined;
+    if (aiAnalysis && 
+        aiAnalysis.future_growth_trend != null &&
+        aiAnalysis.future_inflation_trend != null &&
+        aiAnalysis.future_quadrant &&
+        aiAnalysis.future_confidence != null &&
+        aiAnalysis.future_time_horizon &&
+        aiAnalysis.future_reasoning) {
+      futurePosition = {
+        growth_trend: Number(aiAnalysis.future_growth_trend),
+        inflation_trend: Number(aiAnalysis.future_inflation_trend),
+        quadrant: aiAnalysis.future_quadrant as 'recovery' | 'overheat' | 'stagflation' | 'recession',
+        confidence: Number(aiAnalysis.future_confidence),
+        time_horizon: aiAnalysis.future_time_horizon,
+        reasoning: aiAnalysis.future_reasoning,
+      };
+    }
+
     const countryData = {
       country_code: countryCode.toUpperCase(),
       country_name: indicators[0]?.country_name || countryCode,
       indicators,
       historical_data: historicalData,
-      position
+      position,
+      future_position: futurePosition,
     };
+
+
 
     return NextResponse.json(countryData);
     
