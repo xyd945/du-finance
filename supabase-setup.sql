@@ -56,6 +56,12 @@ CREATE TABLE IF NOT EXISTS ai_analysis_history (
     quadrant VARCHAR(20) NOT NULL,
     confidence DECIMAL(5, 2) NOT NULL,
     reasoning TEXT NOT NULL,
+    future_growth_trend DECIMAL(5, 2),
+    future_inflation_trend DECIMAL(5, 2),
+    future_quadrant VARCHAR(20),
+    future_confidence DECIMAL(5, 2),
+    future_time_horizon VARCHAR(20),
+    future_reasoning TEXT,
     economic_indicators JSONB NOT NULL, -- Store the indicators used for analysis
     created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );
@@ -217,8 +223,17 @@ COMMENT ON COLUMN investment_clock_positions.confidence IS 'AI confidence level 
 COMMENT ON COLUMN investment_clock_positions.reasoning IS 'AI reasoning if AI-generated';
 
 -- Column comments for ai_analysis_history
-COMMENT ON COLUMN ai_analysis_history.confidence IS 'AI confidence level (0-100)';
-COMMENT ON COLUMN ai_analysis_history.reasoning IS 'AI explanation for the analysis';
+COMMENT ON COLUMN ai_analysis_history.growth_trend IS 'Current position growth trend (-100 to 100)';
+COMMENT ON COLUMN ai_analysis_history.inflation_trend IS 'Current position inflation trend (-100 to 100)';
+COMMENT ON COLUMN ai_analysis_history.quadrant IS 'Current position quadrant: recovery, overheat, stagflation, recession';
+COMMENT ON COLUMN ai_analysis_history.confidence IS 'Current position AI confidence level (0-100)';
+COMMENT ON COLUMN ai_analysis_history.reasoning IS 'Current position AI explanation for the analysis';
+COMMENT ON COLUMN ai_analysis_history.future_growth_trend IS 'Future position growth trend (-100 to 100)';
+COMMENT ON COLUMN ai_analysis_history.future_inflation_trend IS 'Future position inflation trend (-100 to 100)';
+COMMENT ON COLUMN ai_analysis_history.future_quadrant IS 'Future position quadrant: recovery, overheat, stagflation, recession';
+COMMENT ON COLUMN ai_analysis_history.future_confidence IS 'Future position AI confidence level (0-100)';
+COMMENT ON COLUMN ai_analysis_history.future_time_horizon IS 'Future position time horizon (e.g., "3-6 months")';
+COMMENT ON COLUMN ai_analysis_history.future_reasoning IS 'Future position AI explanation and prediction reasoning';
 COMMENT ON COLUMN ai_analysis_history.economic_indicators IS 'JSON snapshot of economic indicators used for analysis';
 
 -- =============================================================================

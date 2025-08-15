@@ -48,7 +48,7 @@ export const HistoricalIndicatorSchema = z.object({
 
 export type HistoricalIndicator = z.infer<typeof HistoricalIndicatorSchema>;
 
-// Investment Clock Position Schema
+// Investment Clock Position Schema (Current Position)
 export const InvestmentClockPositionSchema = z.object({
   id: z.number(),
   country_code: z.string().length(3),
@@ -65,11 +65,24 @@ export type InvestmentClockPosition = z.infer<
   typeof InvestmentClockPositionSchema
 >;
 
+// Future Position Schema
+export const FuturePositionSchema = z.object({
+  growth_trend: z.number().min(-100).max(100),
+  inflation_trend: z.number().min(-100).max(100),
+  quadrant: QuadrantSchema,
+  confidence: z.number().min(0).max(100),
+  time_horizon: z.string(), // e.g., "3-6 months", "6-12 months"
+  reasoning: z.string(),
+});
+
+export type FuturePosition = z.infer<typeof FuturePositionSchema>;
+
 // Consolidated country data for display
 export const CountryDataSchema = z.object({
   country_code: z.string().length(3),
   country_name: z.string(),
-  position: InvestmentClockPositionSchema,
+  position: InvestmentClockPositionSchema, // Current Position
+  future_position: FuturePositionSchema.optional(), // Future Position
   indicators: z.array(EconomicIndicatorSchema),
   historical_data: z.record(z.string(), z.array(HistoricalIndicatorSchema)),
 });
@@ -116,13 +129,18 @@ export interface CountryConfig {
   enabled: boolean;
 }
 
-// AI Analysis Interface
+// AI Analysis Interface (Current Position)
 export interface AIAnalysis {
   growth_trend: number;
   inflation_trend: number;
   quadrant: Quadrant;
   confidence: number;
   reasoning: string;
+}
+
+// Enhanced AI Analysis Interface (Current + Future)
+export interface EnhancedAIAnalysis extends AIAnalysis {
+  future_position: FuturePosition;
 }
 
 // App Configuration

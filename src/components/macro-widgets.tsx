@@ -12,6 +12,7 @@ interface MacroWidgetsProps {
   isLoading?: boolean;
   onRefresh?: () => void;
   onPositionsRefresh?: () => void;
+  onCountryDataRefresh?: () => void;
   className?: string;
 }
 
@@ -20,6 +21,7 @@ export function MacroWidgets({
   isLoading = false,
   onRefresh,
   onPositionsRefresh,
+  onCountryDataRefresh,
   className,
 }: MacroWidgetsProps) {
   if (!countryData) {
@@ -82,12 +84,13 @@ export function MacroWidgets({
           🧠 AI Economic Analysis
         </h3>
         <p className="text-xs text-purple-700 mb-3">
-          Use AI to analyze economic indicators and determine the optimal Investment Clock position
+          Use AI to analyze economic indicators and determine current position and predict future position (3-6 months)
         </p>
         <AIAnalysisButton
           countryCode={countryData.country_code}
           countryName={countryData.country_name}
           onPositionsRefresh={onPositionsRefresh}
+          onCountryDataRefresh={onCountryDataRefresh}
         />
       </div>
 

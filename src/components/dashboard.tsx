@@ -168,6 +168,7 @@ export function Dashboard() {
               isLoading={countryLoading}
               onRefresh={handleRefresh}
               onPositionsRefresh={refreshPositions}
+              onCountryDataRefresh={refreshCountryData}
             />
           </section>
         </div>
@@ -190,6 +191,7 @@ export function Dashboard() {
               isLoading={countryLoading}
               onRefresh={handleRefresh}
               onPositionsRefresh={refreshPositions}
+              onCountryDataRefresh={refreshCountryData}
             />
           </section>
         </div>
